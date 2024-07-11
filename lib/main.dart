@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
@@ -15,11 +13,11 @@ void main() {
     nativeAppKey: 'd8a06ec1af8730814033bf36e2cb5cba',
     javaScriptAppKey: "a709c6184e105821403aca9715766056",
   );
-  runApp(const LoginPage());
+  runApp(const MyApp());
 }
 
-class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +37,6 @@ class RootScreen extends StatelessWidget {
     );
   }
 
-  // 배경 컨테이너 위젯 생성
   Widget buildBackgroundContainer(BuildContext context) {
     return Container(
       width: double.infinity,
@@ -58,7 +55,19 @@ class RootScreen extends StatelessWidget {
     );
   }
 
-  // 콘텐츠들을 화면 하단에 위치시키는 메서드
+  Widget buildBackgroundImage() {
+    return Positioned.fill(
+      child: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("assets/img/background.png"), // 로컬 이미지 사용
+            fit: BoxFit.cover,
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget buildContent(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 40), // 하단 여백 추가
@@ -79,21 +88,6 @@ class RootScreen extends StatelessWidget {
     );
   }
 
-  // 배경 이미지 위젯 생성
-  Widget buildBackgroundImage() {
-    return Positioned.fill(
-      child: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("assets/img/background.png"), // 로컬 이미지 사용
-            fit: BoxFit.cover,
-          ),
-        ),
-      ),
-    );
-  }
-
-  // 이용 약관 텍스트 위젯 생성
   Widget buildTermsText() {
     return Container(
       width: 341,
@@ -114,13 +108,12 @@ class RootScreen extends StatelessWidget {
     );
   }
 
-  // 카카오 로그인 버튼 위젯 생성
   Widget buildKakaoLoginButton(BuildContext context) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: () async {
-          await _login(context);
+          await login(context);
         },
         child: Container(
           width: 348,
@@ -164,24 +157,11 @@ class RootScreen extends StatelessWidget {
     );
   }
 
-  // Apple 로그인 버튼 위젯 생성
   Widget buildAppleLoginButton(BuildContext context) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: () {
-          // final String LoginAPI = 'http://kkr010128.iptime.org:12358/api/auth/login'; // 로그인 API URL
-          // Future<Void> sendTokenToApi(String kakaoAccessToken) async {
-          //   final response = await http.post(
-          //   Uri.parse(LoginAPI),
-          //   headers: {
-          //     'Authorization': 'Bearer <your kakao accessToken>',
-          //   }
-          //   ),
-          // },
-          
-          
-          // 애플 로그인 처리 로직
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text('Apple로 로그인'),
@@ -230,7 +210,6 @@ class RootScreen extends StatelessWidget {
     );
   }
 
-  // 타이틀 텍스트 위젯 생성
   Widget buildTitleText() {
     return Container(
       width: 341,
@@ -251,7 +230,6 @@ class RootScreen extends StatelessWidget {
     );
   }
 
-  // 로고 이미지 위젯 생성
   Widget buildLogoImage() {
     return Container(
       width: 85,
@@ -273,46 +251,65 @@ class RootScreen extends StatelessWidget {
     );
   }
 
-  // 카카오 로그인 처리 메서드
-  Future<void> _login(BuildContext context) async {
-    try {
-      if (await isKakaoTalkInstalled()) { // 카카오톡이 설치된 경우
-        try {
-          // 사용자의 토근 정보 받아오기
-          OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
-          print('로그인 성공 ${token.accessToken}');
-          navigateHome(context);
-        } catch (error) {
-          if (error is PlatformException && error.code == '사용자가 로그인을 취소함') {
-            return;
-          }
-          try {
-            // 사용자의 토근 정보 받아오기
-            OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
-            print('로그인 성공 ${token.accessToken}');
-            navigateHome(context);
-          } catch (error) {
-          }
-        }
-      } else { // 카카오톡이 설치되지 않은 경우
-        try {
-          // 사용자의 토근 정보 받아오기
-          OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
-          print('로그인 성공 ${token.accessToken}');
-          navigateHome(context);
-        } catch (error) {
-        }
-      }
-    } catch (e) {
-      print('로그인 과정에서 오류 발생: $e');
+  Future<Map<String, String>> sendTokenToApi(String kakaoAccessToken) async {
+    final response = await http.post(
+      Uri.parse('http://kkr010128.iptime.org:12358/api/auth/login'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $kakaoAccessToken',
+      },
+    );
+
+    if (response.statusCode == 201) {
+      final responseData = json.decode(response.body);
+      String serviceAccessToken = responseData['accessToken'];
+      String serviceRefreshToken = responseData['refreshToken'];
+      return {'serviceAccessToken': serviceAccessToken, 'serviceRefreshToken': serviceRefreshToken};
+    } else {
+      print('fail');
+      throw Exception('Failed to send token to API');
     }
   }
 
-  // HomeScreen으로 이동하는 메소드
-  void navigateHome(BuildContext context) {
+  Future<void> login(BuildContext context) async {
+    try {
+      if (await isKakaoTalkInstalled()) {
+        try {
+          OAuthToken token = await UserApi.instance.loginWithKakaoTalk();
+          var serviceTokens = await sendTokenToApi(token.accessToken);
+          navigateHome(context, serviceTokens['serviceAccessToken']!, serviceTokens['serviceRefreshToken']!);
+        } catch (error) {
+          if (error is PlatformException && error.code == 'CANCELED') {
+            return;
+          }
+          try {
+            OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
+            var serviceTokens = await sendTokenToApi(token.accessToken);
+            navigateHome(context, serviceTokens['serviceAccessToken']!, serviceTokens['serviceRefreshToken']!);
+          } catch (error) {
+            // Handle error
+          }
+        }
+      } else {
+        try {
+          OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
+          var serviceTokens = await sendTokenToApi(token.accessToken);
+          navigateHome(context, serviceTokens['serviceAccessToken']!, serviceTokens['serviceRefreshToken']!);
+        } catch (error) {
+          // Handle error
+      }
+    }
+  } catch (e) {
+    // Handle error
+  }
+}
+
+  void navigateHome(BuildContext context, String serviceAccessToken, String serviceRefreshToken) {
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => const HomeScreen()), // HomeScreen으로 변경
+      MaterialPageRoute(
+        builder: (context) => HomeScreen(serviceAccessToken: serviceAccessToken, serviceRefreshToken: serviceRefreshToken),
+      ),
     );
   }
 }
