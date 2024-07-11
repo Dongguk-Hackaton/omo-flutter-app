@@ -1,9 +1,11 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'homescreen.dart'; // 홈 화면을 위한 import
+import 'homescreen.dart'; // 홈 화면 연결
 
 void main() {
   // 웹 환경에서 카카오 로그인을 정상적으로 완료하려면 runApp() 호출 전 아래 메서드 호출 필요
@@ -13,12 +15,11 @@ void main() {
     nativeAppKey: 'd8a06ec1af8730814033bf36e2cb5cba',
     javaScriptAppKey: "a709c6184e105821403aca9715766056",
   );
-  // setPathUrlStrategy();
-  runApp(const MyApp());
+  runApp(const LoginPage());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class LoginPage extends StatelessWidget {
+  const LoginPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -169,7 +170,15 @@ class RootScreen extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: () {
-          
+          // final String LoginAPI = 'http://kkr010128.iptime.org:12358/api/auth/login'; // 로그인 API URL
+          // Future<Void> sendTokenToApi(String kakaoAccessToken) async {
+          //   final response = await http.post(
+          //   Uri.parse(LoginAPI),
+          //   headers: {
+          //     'Authorization': 'Bearer <your kakao accessToken>',
+          //   }
+          //   ),
+          // },
           
           
           // 애플 로그인 처리 로직
@@ -267,43 +276,31 @@ class RootScreen extends StatelessWidget {
   // 카카오 로그인 처리 메서드
   Future<void> _login(BuildContext context) async {
     try {
-      if (await isKakaoTalkInstalled()) {
-        print('카카오톡이 설치되어 있습니다.');
+      if (await isKakaoTalkInstalled()) { // 카카오톡이 설치된 경우
         try {
-          await UserApi.instance.loginWithKakaoTalk();
-          print('카카오톡으로 로그인 성공');
-          AccessTokenInfo tokenInfo = await UserApi.instance.accessTokenInfo();
-          print('토큰 정보 보기 성공\n회원정보: ${tokenInfo.id}\n만료시간: ${tokenInfo.expiresIn} 초');
-          _navigateToHomeScreen(context);
+          // 사용자의 토근 정보 받아오기
+          OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
+          print('로그인 성공 ${token.accessToken}');
+          navigateHome(context);
         } catch (error) {
-          print('카카오톡으로 로그인 실패 $error');
-
-          if (error is PlatformException && error.code == 'CANCELED') {
+          if (error is PlatformException && error.code == '사용자가 로그인을 취소함') {
             return;
           }
-
           try {
-            await UserApi.instance.loginWithKakaoAccount();
-            print('카카오계정으로 로그인 성공');
-            AccessTokenInfo tokenInfo = await UserApi.instance.accessTokenInfo();
-            print('토큰 정보 보기 성공\n회원정보: ${tokenInfo.id}\n만료시간: ${tokenInfo.expiresIn} 초');
-            _navigateToHomeScreen(context);
+            // 사용자의 토근 정보 받아오기
+            OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
+            print('로그인 성공 ${token.accessToken}');
+            navigateHome(context);
           } catch (error) {
-            print('카카오계정으로 로그인 실패 $error');
           }
         }
-      } else {
-          print('카카오톡이 설치되어 있지 않습니다.');
+      } else { // 카카오톡이 설치되지 않은 경우
         try {
-          await UserApi.instance.loginWithKakaoAccount();
-          print('카카오계정으로 로그인 성공');
-          AccessTokenInfo tokenInfo = await UserApi.instance.accessTokenInfo();
-          print('토큰 정보 보기 성공\n회원정보: ${tokenInfo.id}\n만료시간: ${tokenInfo.expiresIn} 초');
-          User user = await UserApi.instance.me();
-          print('사용자 정보 요청 성공\n회원번호: ${user.id}\n닉네임: ${user.kakaoAccount?.profile?.nickname}\n프로필사진: ${user.kakaoAccount?.profile?.profileImageUrl}');
-          _navigateToHomeScreen(context);
+          // 사용자의 토근 정보 받아오기
+          OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
+          print('로그인 성공 ${token.accessToken}');
+          navigateHome(context);
         } catch (error) {
-          print('카카오계정으로 로그인 실패 $error');
         }
       }
     } catch (e) {
@@ -311,8 +308,8 @@ class RootScreen extends StatelessWidget {
     }
   }
 
-  // HomeScreen으로 이동하는 메서드
-  void _navigateToHomeScreen(BuildContext context) {
+  // HomeScreen으로 이동하는 메소드
+  void navigateHome(BuildContext context) {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => const HomeScreen()), // HomeScreen으로 변경
