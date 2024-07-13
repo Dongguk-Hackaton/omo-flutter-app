@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:http/http.dart' as http;
+import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:convert';
 import 'homescreen.dart'; // 홈 화면 연결
 
@@ -264,9 +265,24 @@ class RootScreen extends StatelessWidget {
       final responseData = json.decode(response.body);
       String serviceAccessToken = responseData['accessToken'];
       String serviceRefreshToken = responseData['refreshToken'];
+      Fluttertoast.showToast(
+          msg: '카카오로 로그인합니다.',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 2,
+          textColor: Colors.white,
+          backgroundColor: Colors.black,
+        );
       return {'serviceAccessToken': serviceAccessToken, 'serviceRefreshToken': serviceRefreshToken};
     } else {
-      print('fail');
+      Fluttertoast.showToast(
+          msg: '카카오 인증에 실패했습니다.',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          textColor: Colors.white,
+          backgroundColor: const Color.fromARGB(255, 0, 0, 0),
+        );
       throw Exception('Failed to send token to API');
     }
   }
@@ -277,6 +293,7 @@ class RootScreen extends StatelessWidget {
         try {
           OAuthToken token = await UserApi.instance.loginWithKakaoTalk();
           var serviceTokens = await sendTokenToApi(token.accessToken);
+          print(token.accessToken);
           navigateHome(context, serviceTokens['serviceAccessToken']!, serviceTokens['serviceRefreshToken']!);
         } catch (error) {
           if (error is PlatformException && error.code == 'CANCELED') {
@@ -294,6 +311,7 @@ class RootScreen extends StatelessWidget {
         try {
           OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
           var serviceTokens = await sendTokenToApi(token.accessToken);
+          print(token.accessToken);
           navigateHome(context, serviceTokens['serviceAccessToken']!, serviceTokens['serviceRefreshToken']!);
         } catch (error) {
           // Handle error
@@ -305,6 +323,7 @@ class RootScreen extends StatelessWidget {
 }
 
   void navigateHome(BuildContext context, String serviceAccessToken, String serviceRefreshToken) {
+    print(serviceAccessToken);
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
