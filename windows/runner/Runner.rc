@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "what_we_do" "\0"
+            VALUE "CompanyName", "com.travelmaker" "\0"
+            VALUE "FileDescription", "오늘 모해?" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "what_we_do" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2024 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "what_we_do.exe" "\0"
-            VALUE "ProductName", "what_we_do" "\0"
+            VALUE "InternalName", "오모" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2024 com.travelmaker. All rights reserved." "\0"
+            VALUE "OriginalFilename", "omo.exe" "\0"
+            VALUE "ProductName", "오모" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

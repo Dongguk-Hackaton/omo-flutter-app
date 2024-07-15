@@ -1,4 +1,4 @@
-package com.example.what_we_do
+package com.travelmaker.omo
 
 import io.flutter.embedding.android.FlutterActivity
 
