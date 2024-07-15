@@ -114,6 +114,8 @@ class RootScreen extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
         onTap: () async {
           await login(context);
         },
@@ -163,6 +165,8 @@ class RootScreen extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
         onTap: () {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
