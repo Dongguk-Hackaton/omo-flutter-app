@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -272,9 +273,10 @@ class RootScreen extends StatelessWidget {
       String serviceRefreshToken = responseData['refreshToken'];
       return {'serviceAccessToken': serviceAccessToken, 'serviceRefreshToken': serviceRefreshToken};
     } else {
+      showToast('오류가 발생하였습니다 다시 시도해주세요');
       throw Exception('Failed to send token to API');
+      }
     }
-  }
 
   Future<void> login(BuildContext context) async {
     try {
@@ -292,7 +294,7 @@ class RootScreen extends StatelessWidget {
             var serviceTokens = await sendTokenToApi(token.accessToken);
             navigateHome(context, serviceTokens['serviceAccessToken']!, serviceTokens['serviceRefreshToken']!);
           } catch (error) {
-            // Handle error
+            showToast('오류가 발생하였습니다 다시 시도해주세요');
           }
         }
       } else {
@@ -301,13 +303,13 @@ class RootScreen extends StatelessWidget {
           var serviceTokens = await sendTokenToApi(token.accessToken);
           navigateHome(context, serviceTokens['serviceAccessToken']!, serviceTokens['serviceRefreshToken']!);
         } catch (error) {
-          // Handle error
+          showToast('오류가 발생하였습니다 다시 시도해주세요');
         }
       }
     } catch (e) {
-    // Handle error
+      showToast('오류가 발생하였습니다 다시 시도해주세요');
+    }
   }
-}
 
   void navigateHome(BuildContext context, String serviceAccessToken, String serviceRefreshToken) {
     print(serviceAccessToken);
@@ -316,6 +318,16 @@ class RootScreen extends StatelessWidget {
       MaterialPageRoute(
         builder: (context) => HomeScreen(serviceAccessToken: serviceAccessToken, serviceRefreshToken: serviceRefreshToken),
       ),
+    );
+  }
+
+  void showToast(String message) {
+    Fluttertoast.showToast(
+      msg: message,
+      toastLength: Toast.LENGTH_SHORT, // 토스트 뜨는 시간 얼마나 길게 할 지 (Android)
+      gravity: ToastGravity.BOTTOM, // 토스트 위치 어디에 할 것인지
+      timeInSecForIosWeb: 3, // 토스트 뜨는 시간 얼마나 길게 할 지 (iOS & Web)
+      backgroundColor: Colors.pinkAccent[100],
     );
   }
 }
