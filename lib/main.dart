@@ -95,14 +95,14 @@ class RootScreen extends StatelessWidget {
       height: 42,
       child: Center(
         child: Text(
-          '로그인 하면 오모의 이용약관, 개인정보 처리방침에\n동의하게 됩니다.',
+          '로그인시 이용약관 및 개인정보처리방침 동의로 간주됩니다.',
           textAlign: TextAlign.center,
           style: TextStyle(
-            color: Colors.white,
-            fontSize: 14,
+            color: Colors.white38,
+            fontSize: 12,
             fontFamily: 'Apple SD Gothic Neo',
             fontWeight: FontWeight.w600,
-            height: 1.2,
+            height: 1,
           ),
         ),
       ),
