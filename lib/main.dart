@@ -7,26 +7,37 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'homescreen.dart'; // 홈 화면 연결
 
-void main() {
-  // 웹 환경에서 카카오 로그인을 정상적으로 완료하려면 runApp() 호출 전 아래 메서드 호출 필요
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // runApp() 호출 전 Flutter SDK 초기화
   KakaoSdk.init(
     nativeAppKey: 'd8a06ec1af8730814033bf36e2cb5cba',
     javaScriptAppKey: "a709c6184e105821403aca9715766056",
   );
-  runApp(const MyApp());
+
+  // 토큰 확인 및 초기 화면 결정
+  final storage = FlutterSecureStorage();
+  String? accessToken = await storage.read(key: 'serviceAccessToken');
+
+  Widget initialScreen;
+  if (accessToken != null) {
+    initialScreen = HomeScreen();
+  } else {
+    initialScreen = RootScreen();
+  }
+
+  runApp(MyApp(initialScreen: initialScreen));
 }
 
 final storage = FlutterSecureStorage(); // 토큰 값과 로그인 유지 정보를 저장, SecureStorage 사용
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final Widget initialScreen;
+  const MyApp({super.key, required this.initialScreen});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: RootScreen(),
+      home: initialScreen,
     );
   }
 }
@@ -217,8 +228,8 @@ class RootScreen extends StatelessWidget {
       final responseData = json.decode(response.body);
       String serviceAccessToken = responseData['accessToken'];
       String serviceRefreshToken = responseData['refreshToken'];
-      await storage.write(key: serviceAccessToken, value: serviceAccessToken);
-      await storage.write(key: serviceRefreshToken, value: serviceRefreshToken);
+      await storage.write(key: 'serviceAccessToken', value: serviceAccessToken);
+      await storage.write(key: 'serviceRefreshToken', value: serviceRefreshToken);
       return {'serviceAccessToken': serviceAccessToken, 'serviceRefreshToken': serviceRefreshToken};
     } else {
       showToast('오류가 발생하였습니다 다시 시도해주세요');
@@ -231,6 +242,7 @@ class RootScreen extends StatelessWidget {
       if (await isKakaoTalkInstalled()) {
         try {
           OAuthToken token = await UserApi.instance.loginWithKakaoTalk();
+          // ignore: unused_local_variable
           var serviceTokens = await sendTokenToApi(token.accessToken);
           navigateHome(context);
         } catch (error) {
@@ -239,6 +251,7 @@ class RootScreen extends StatelessWidget {
           }
           try {
             OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
+            // ignore: unused_local_variable
             var serviceTokens = await sendTokenToApi(token.accessToken);
             navigateHome(context);
           } catch (error) {
@@ -248,6 +261,7 @@ class RootScreen extends StatelessWidget {
       } else {
         try {
           OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
+          // ignore: unused_local_variable
           var serviceTokens = await sendTokenToApi(token.accessToken);
           navigateHome(context);
         } catch (error) {
