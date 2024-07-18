@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -16,6 +17,8 @@ void main() {
   );
   runApp(const MyApp());
 }
+
+final storage = FlutterSecureStorage(); // 토큰 값과 로그인 유지 정보를 저장, SecureStorage 사용
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -214,6 +217,8 @@ class RootScreen extends StatelessWidget {
       final responseData = json.decode(response.body);
       String serviceAccessToken = responseData['accessToken'];
       String serviceRefreshToken = responseData['refreshToken'];
+      await storage.write(key: serviceAccessToken, value: serviceAccessToken);
+      await storage.write(key: serviceRefreshToken, value: serviceRefreshToken);
       return {'serviceAccessToken': serviceAccessToken, 'serviceRefreshToken': serviceRefreshToken};
     } else {
       showToast('오류가 발생하였습니다 다시 시도해주세요');
@@ -255,7 +260,6 @@ class RootScreen extends StatelessWidget {
   }
 
   void navigateHome(BuildContext context, String serviceAccessToken, String serviceRefreshToken) {
-    print(serviceAccessToken);
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
