@@ -232,7 +232,7 @@ class RootScreen extends StatelessWidget {
         try {
           OAuthToken token = await UserApi.instance.loginWithKakaoTalk();
           var serviceTokens = await sendTokenToApi(token.accessToken);
-          navigateHome(context, serviceTokens['serviceAccessToken']!, serviceTokens['serviceRefreshToken']!);
+          navigateHome(context);
         } catch (error) {
           if (error is PlatformException && error.code == 'CANCELED') {
             return;
@@ -240,7 +240,7 @@ class RootScreen extends StatelessWidget {
           try {
             OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
             var serviceTokens = await sendTokenToApi(token.accessToken);
-            navigateHome(context, serviceTokens['serviceAccessToken']!, serviceTokens['serviceRefreshToken']!);
+            navigateHome(context);
           } catch (error) {
             showToast('오류가 발생하였습니다 다시 시도해주세요');
           }
@@ -249,7 +249,7 @@ class RootScreen extends StatelessWidget {
         try {
           OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
           var serviceTokens = await sendTokenToApi(token.accessToken);
-          navigateHome(context, serviceTokens['serviceAccessToken']!, serviceTokens['serviceRefreshToken']!);
+          navigateHome(context);
         } catch (error) {
           showToast('오류가 발생하였습니다 다시 시도해주세요');
         }
@@ -259,11 +259,11 @@ class RootScreen extends StatelessWidget {
     }
   }
 
-  void navigateHome(BuildContext context, String serviceAccessToken, String serviceRefreshToken) {
+  void navigateHome(BuildContext context) {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => HomeScreen(serviceAccessToken: serviceAccessToken, serviceRefreshToken: serviceRefreshToken),
+        builder: (context) => HomeScreen(),
       ),
     );
   }
