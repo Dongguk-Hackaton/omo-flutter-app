@@ -82,8 +82,6 @@ class RootScreen extends StatelessWidget {
           buildTitleText(), // 타이틀 텍스트 생성
           SizedBox(height: 32), // 타이틀 텍스트와 카카오 로그인 버튼 사이 간격
           buildKakaoLoginButton(context), // 카카오 로그인 버튼 생성
-          SizedBox(height: 20), // 버튼들 사이 간격
-          buildAppleLoginButton(context), // Apple 로그인 버튼 생성
           SizedBox(height: 22), // 버튼과 이용 약관 텍스트 사이 간격
           buildTermsText(), // 이용 약관 텍스트 생성
         ],
@@ -149,61 +147,6 @@ class RootScreen extends StatelessWidget {
                 '카카오로 로그인',
                 style: TextStyle(
                   color: Colors.black,
-                  fontSize: 16,
-                  fontFamily: 'Apple SD Gothic Neo',
-                  fontWeight: FontWeight.w600,
-                  height: 1.2,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget buildAppleLoginButton(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        splashColor: Colors.transparent,
-        highlightColor: Colors.transparent,
-        onTap: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Apple로 로그인'),
-              duration: Duration(seconds: 2),
-            ),
-          );
-        },
-        child: Container(
-          width: double.infinity,
-          height: 52.56,
-          decoration: BoxDecoration(
-            color: Colors.black, // 애플 검정색
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                spreadRadius: 2,
-                blurRadius: 6,
-                offset: Offset(0, 2), // 그림자 위치
-              ),
-            ],
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset(
-                'assets/img/apple_sym.png', // 애플 로고 이미지
-                width: 24,
-                height: 24,
-              ),
-              SizedBox(width: 8), // 로고와 텍스트 사이 간격 추가
-              Text(
-                'Apple로 로그인',
-                style: TextStyle(
-                  color: Colors.white,
                   fontSize: 16,
                   fontFamily: 'Apple SD Gothic Neo',
                   fontWeight: FontWeight.w600,
