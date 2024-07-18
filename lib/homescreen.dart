@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {
-  final String serviceAccessToken;
-  final String serviceRefreshToken;
 
-  HomeScreen({required this.serviceAccessToken, required this.serviceRefreshToken});
+  HomeScreen();
 
   @override
   Widget build(BuildContext context) {
@@ -16,8 +14,8 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Access Token: $serviceAccessToken'),
-            Text('Refresh Token: $serviceRefreshToken'),
+            Text('Access Token: '),
+            Text('Refresh Token: '),
           ],
         ),
       ),
