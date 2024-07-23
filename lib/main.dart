@@ -1,29 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'homescreen.dart'; // 홈 화면 연결
 
-void main() {
-  // 웹 환경에서 카카오 로그인을 정상적으로 완료하려면 runApp() 호출 전 아래 메서드 호출 필요
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // runApp() 호출 전 Flutter SDK 초기화
   KakaoSdk.init(
     nativeAppKey: 'd8a06ec1af8730814033bf36e2cb5cba',
     javaScriptAppKey: "a709c6184e105821403aca9715766056",
   );
-  runApp(const MyApp());
+
+  // 토큰 확인 및 초기 화면 결정
+  final storage = FlutterSecureStorage();
+  String? accessToken = await storage.read(key: 'serviceAccessToken');
+
+  Widget initialScreen;
+  if (accessToken != null) {
+    initialScreen = HomeScreen();
+  } else {
+    initialScreen = RootScreen();
+  }
+
+  runApp(MyApp(initialScreen: initialScreen));
 }
 
+final storage = FlutterSecureStorage(); // 토큰 값과 로그인 유지 정보를 저장, SecureStorage 사용
+
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final Widget initialScreen;
+  const MyApp({super.key, required this.initialScreen});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: RootScreen(),
+      home: initialScreen,
     );
   }
 }
@@ -82,8 +96,6 @@ class RootScreen extends StatelessWidget {
           buildTitleText(), // 타이틀 텍스트 생성
           SizedBox(height: 32), // 타이틀 텍스트와 카카오 로그인 버튼 사이 간격
           buildKakaoLoginButton(context), // 카카오 로그인 버튼 생성
-          SizedBox(height: 20), // 버튼들 사이 간격
-          buildAppleLoginButton(context), // Apple 로그인 버튼 생성
           SizedBox(height: 22), // 버튼과 이용 약관 텍스트 사이 간격
           buildTermsText(), // 이용 약관 텍스트 생성
         ],
@@ -97,14 +109,14 @@ class RootScreen extends StatelessWidget {
       height: 42,
       child: Center(
         child: Text(
-          '로그인 하면 오모의 이용약관, 개인정보 처리방침에\n동의하게 됩니다.',
+          '로그인시 이용약관 및 개인정보처리방침 동의로 간주됩니다.',
           textAlign: TextAlign.center,
           style: TextStyle(
-            color: Colors.white,
-            fontSize: 14,
+            color: Colors.white38,
+            fontSize: 12,
             fontFamily: 'Apple SD Gothic Neo',
             fontWeight: FontWeight.w600,
-            height: 1.2,
+            height: 1,
           ),
         ),
       ),
@@ -149,61 +161,6 @@ class RootScreen extends StatelessWidget {
                 '카카오로 로그인',
                 style: TextStyle(
                   color: Colors.black,
-                  fontSize: 16,
-                  fontFamily: 'Apple SD Gothic Neo',
-                  fontWeight: FontWeight.w600,
-                  height: 1.2,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget buildAppleLoginButton(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        splashColor: Colors.transparent,
-        highlightColor: Colors.transparent,
-        onTap: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Apple로 로그인'),
-              duration: Duration(seconds: 2),
-            ),
-          );
-        },
-        child: Container(
-          width: double.infinity,
-          height: 52.56,
-          decoration: BoxDecoration(
-            color: Colors.black, // 애플 검정색
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                spreadRadius: 2,
-                blurRadius: 6,
-                offset: Offset(0, 2), // 그림자 위치
-              ),
-            ],
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset(
-                'assets/img/apple_sym.png', // 애플 로고 이미지
-                width: 24,
-                height: 24,
-              ),
-              SizedBox(width: 8), // 로고와 텍스트 사이 간격 추가
-              Text(
-                'Apple로 로그인',
-                style: TextStyle(
-                  color: Colors.white,
                   fontSize: 16,
                   fontFamily: 'Apple SD Gothic Neo',
                   fontWeight: FontWeight.w600,
@@ -271,6 +228,8 @@ class RootScreen extends StatelessWidget {
       final responseData = json.decode(response.body);
       String serviceAccessToken = responseData['accessToken'];
       String serviceRefreshToken = responseData['refreshToken'];
+      await storage.write(key: 'serviceAccessToken', value: serviceAccessToken);
+      await storage.write(key: 'serviceRefreshToken', value: serviceRefreshToken);
       return {'serviceAccessToken': serviceAccessToken, 'serviceRefreshToken': serviceRefreshToken};
     } else {
       showToast('오류가 발생하였습니다 다시 시도해주세요');
@@ -283,16 +242,18 @@ class RootScreen extends StatelessWidget {
       if (await isKakaoTalkInstalled()) {
         try {
           OAuthToken token = await UserApi.instance.loginWithKakaoTalk();
+          // ignore: unused_local_variable
           var serviceTokens = await sendTokenToApi(token.accessToken);
-          navigateHome(context, serviceTokens['serviceAccessToken']!, serviceTokens['serviceRefreshToken']!);
+          navigateHome(context);
         } catch (error) {
           if (error is PlatformException && error.code == 'CANCELED') {
             return;
           }
           try {
             OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
+            // ignore: unused_local_variable
             var serviceTokens = await sendTokenToApi(token.accessToken);
-            navigateHome(context, serviceTokens['serviceAccessToken']!, serviceTokens['serviceRefreshToken']!);
+            navigateHome(context);
           } catch (error) {
             showToast('오류가 발생하였습니다 다시 시도해주세요');
           }
@@ -300,8 +261,9 @@ class RootScreen extends StatelessWidget {
       } else {
         try {
           OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
+          // ignore: unused_local_variable
           var serviceTokens = await sendTokenToApi(token.accessToken);
-          navigateHome(context, serviceTokens['serviceAccessToken']!, serviceTokens['serviceRefreshToken']!);
+          navigateHome(context);
         } catch (error) {
           showToast('오류가 발생하였습니다 다시 시도해주세요');
         }
@@ -311,12 +273,11 @@ class RootScreen extends StatelessWidget {
     }
   }
 
-  void navigateHome(BuildContext context, String serviceAccessToken, String serviceRefreshToken) {
-    print(serviceAccessToken);
+  void navigateHome(BuildContext context) {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => HomeScreen(serviceAccessToken: serviceAccessToken, serviceRefreshToken: serviceRefreshToken),
+        builder: (context) => HomeScreen(),
       ),
     );
   }
