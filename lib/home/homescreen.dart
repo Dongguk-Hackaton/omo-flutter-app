@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'main.dart';
+import 'package:omo/home/view/HomeAddButton.dart';
+import 'package:omo/home/view/HomeAppBar.dart';
+import 'package:omo/home/view/HomeBanner.dart';
+import 'package:omo/home/view/HomeTravelSchedule.dart';
+import 'package:omo/home/view/SliderPlaceList.dart';
+import '../main.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
@@ -12,39 +17,25 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Home Screen'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.logout),
-            onPressed: () async {
-              await logout(context);
-            },
-          ),
-        ],
-      ),
-      body: Center(
-        child: FutureBuilder<Map<String, String>>(
-          future: _getUserInfo(context),
-          builder: (BuildContext context, AsyncSnapshot<Map<String, String>> snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return CircularProgressIndicator();
-            } else if (snapshot.hasError) {
-              return Text('Error: ${snapshot.error}');
-            } else {
-              final username = snapshot.data?['username'] ?? 'N/A';
-              final userimage = snapshot.data?['userimage'] ?? 'N/A';
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('Username: $username'),
-                  Image.network('$userimage'),
-                ],
-              );
-            }
-          },
+      appBar: HomeAppBar(),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            HomeTravelSchedule(isReady: true),
+            HomeBanner(),
+            SliderPlaceList(
+              title: "경주의 인기장소 🔥",
+              subTitle: "조만간 방문할 경주의 인가장소를 방문해보세요",
+            ),
+            SliderPlaceList(
+              title: "나의 맞춤형 여행지 🍀",
+              subTitle: "광래님의 맞춤형 여행지를 골라봤어요",
+            ),
+          ],
         ),
       ),
+      floatingActionButton: HomeAddButton(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 
