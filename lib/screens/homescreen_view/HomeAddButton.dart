@@ -9,8 +9,8 @@ class HomeAddButton extends StatelessWidget {
     return GestureDetector(
       onTap: () {},
       child: Container(
-        margin: EdgeInsets.symmetric(vertical: 30),
-        padding: EdgeInsets.symmetric(horizontal: 18, vertical: 15),
+        margin: EdgeInsets.symmetric(vertical: 44),
+        padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
         decoration: BoxDecoration(
           color: Color(0xffffffff),
           border: Border.all(
@@ -31,11 +31,11 @@ class HomeAddButton extends StatelessWidget {
           child: Row(
             children: [
               Text(
-                "일정 추가",
+                "코스 등록",
                 style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
               ),
               SizedBox(
-                width: 10,
+                width: 5,
               ),
               Icon(
                 Icons.add,

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:omo/home/view/HomeAddButton.dart';
-import 'package:omo/home/view/HomeAppBar.dart';
-import 'package:omo/home/view/HomeBanner.dart';
-import 'package:omo/home/view/HomeTravelSchedule.dart';
-import 'package:omo/home/view/SliderPlaceList.dart';
+import 'package:omo/screens/homescreen_view/HomeAddButton.dart';
+import 'package:omo/screens/homescreen_view/HomeAppBar.dart';
+import 'package:omo/screens/homescreen_view/HomeBanner.dart';
+import 'package:omo/screens/homescreen_view/HomeTravelSchedule.dart';
+import 'package:omo/screens/homescreen_view/SliderPlaceList.dart';
+import 'package:omo/screens/NavigationBar.dart';
 import '../main.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -25,7 +26,7 @@ class HomeScreen extends StatelessWidget {
             HomeBanner(),
             SliderPlaceList(
               title: "경주의 인기장소 🔥",
-              subTitle: "조만간 방문할 경주의 인가장소를 방문해보세요",
+              subTitle: "곧 방문할 경주의 인기 장소를 방문해보세요",
             ),
             SliderPlaceList(
               title: "나의 맞춤형 여행지 🍀",
@@ -34,6 +35,7 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
       ),
+      bottomNavigationBar: CustomNavigationBar(),
       floatingActionButton: HomeAddButton(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );

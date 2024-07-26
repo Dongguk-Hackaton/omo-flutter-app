@@ -39,12 +39,12 @@ class ExistSchedule extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(children: [
-          Text("역사를 품은 도시 경주",
+          Text("역사를 품은 도시 경주", // 여행지 이름
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
           Icon(Icons.keyboard_arrow_right)
         ]),
         SizedBox(height: 7),
-        Text("2024.8.1 ~ 8.2",
+        Text("2024.8.1 ~ 8.2", // 여행 시작일 ~ 여행 종료일
             style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold))
       ],
     );

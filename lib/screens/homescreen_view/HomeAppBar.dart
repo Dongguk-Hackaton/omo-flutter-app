@@ -5,7 +5,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
   HomeAppBar({super.key});
 
   @override
-  Size get preferredSize => Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => Size.fromHeight(kToolbarHeight); 
 
   @override
   Widget build(BuildContext context) {
