@@ -4,6 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:http/http.dart' as http;
+import 'package:omo/taste_analysis/taste_analysis_screen.dart';
 import 'dart:convert';
 import 'home/homescreen.dart'; // 홈 화면 연결
 
@@ -19,11 +20,12 @@ void main() async {
   String? accessToken = await storage.read(key: 'serviceAccessToken');
 
   Widget initialScreen;
-  if (accessToken != null) {
-    initialScreen = HomeScreen();
-  } else {
-    initialScreen = RootScreen();
-  }
+  // if (accessToken != null) {
+  //   initialScreen = TasteAnalysis();
+  // } else {
+  //   initialScreen = RootScreen();
+  // }
+  initialScreen = TasteAnalysisScreen();
 
   runApp(MyApp(initialScreen: initialScreen));
 }
