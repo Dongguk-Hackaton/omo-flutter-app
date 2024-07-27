@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:omo/colors.dart';
 import 'package:omo/screens/homescreen_view/HomeAddButton.dart';
 import 'package:omo/screens/homescreen_view/HomeAppBar.dart';
 import 'package:omo/screens/homescreen_view/HomeBanner.dart';
@@ -18,22 +19,27 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: HomeAppBar(),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            HomeTravelSchedule(isReady: true),
-            HomeBanner(),
-            SliderPlaceList(
-              title: "경주의 인기장소 🔥",
-              subTitle: "곧 방문할 경주의 인기 장소를 방문해보세요",
+      backgroundColor: omoWhite,
+      body: CustomScrollView(
+        slivers: [
+          HomeAppBar(), // HomeAppBar 위젯 사용
+          SliverList(
+            delegate: SliverChildListDelegate(
+              [
+                HomeTravelSchedule(isReady: true),
+                HomeBanner(),
+                SliderPlaceList(
+                  title: "경주의 인기장소 🔥",
+                  subTitle: "곧 방문할 경주의 인기 장소를 방문해보세요",
+                ),
+                SliderPlaceList(
+                  title: "나의 맞춤형 여행지 🍀",
+                  subTitle: "광래님의 맞춤형 여행지를 골라봤어요",
+                ),
+              ],
             ),
-            SliderPlaceList(
-              title: "나의 맞춤형 여행지 🍀",
-              subTitle: "광래님의 맞춤형 여행지를 골라봤어요",
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
       bottomNavigationBar: CustomNavigationBar(),
       floatingActionButton: HomeAddButton(),
