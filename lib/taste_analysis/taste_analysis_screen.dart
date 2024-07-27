@@ -40,9 +40,6 @@ class _RealTasteAnalysisScreenState extends State<RealTasteAnalysisScreen> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Obx(
-            () => Text(tasteAnalysisController.getAllInputData()),
-          ),
           Expanded(
             child: Obx(() {
               return ListView.builder(

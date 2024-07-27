@@ -24,17 +24,32 @@ class AgentMessage extends StatelessWidget {
         Obx(() {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              for (int index = 0; index < controller.count.value; index++)
-                AgentSpeechBubble(
-                  message: controller.targetMessages[index],
-                  shape: AgentSpeechBubbleShapeType.type2,
-                ),
-            ],
+            children: controller.targetShowAgentMessages.asMap().entries.map((entry) {
+              int index = entry.key;
+              var message = entry.value;
+
+              if (index == controller.targetShowAgentMessages.length - 1) {
+                return AgentSpeechBubble(
+                  message: message,
+                  shape: AgentSpeechBubbleShapeType.type3,
+                );
+              }
+              if (index == 0) {
+                return AgentSpeechBubble(
+                  message: message,
+                  shape: AgentSpeechBubbleShapeType.type1,
+                );
+              }
+              return AgentSpeechBubble(
+                message: message,
+                shape: AgentSpeechBubbleShapeType.type2,
+              );
+            }).toList(),
           );
         }),
         Obx(() => Container(child: controller.userTasteInputWidget.value)),
       ],
     );
+
   }
 }

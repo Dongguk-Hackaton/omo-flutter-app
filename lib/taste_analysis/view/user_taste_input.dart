@@ -35,7 +35,7 @@ class TasteButtonsWidget extends StatelessWidget {
 
     return Obx(
       () => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 14),
+        padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 52),
         child: Wrap(
           alignment: WrapAlignment.end, // 오른쪽 정렬
           spacing: 10.0, // 버튼 사이의 가로 간격

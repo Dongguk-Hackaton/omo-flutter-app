@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:omo/taste_analysis/const/agent_speech_bubble_shape_type.dart';
 
@@ -17,7 +18,7 @@ class AgentSpeechBubble extends StatefulWidget {
 
 class _AgentMessageState extends State<AgentSpeechBubble> {
   final TasteAnalysisScrollerController tasteAnalysisScrollerController =
-  Get.find();
+      Get.find();
 
   @override
   void initState() {
@@ -27,38 +28,61 @@ class _AgentMessageState extends State<AgentSpeechBubble> {
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
-    if(widget.shape == AgentSpeechBubbleShapeType.type1){
-      return AgentSpeechBubbleShape(
-        message: widget.message,
-        topLeft: AgentSpeechBubbleRoundType.big,
-        topRight: AgentSpeechBubbleRoundType.big,
-        bottomLeft: AgentSpeechBubbleRoundType.small,
-        bottomRight: AgentSpeechBubbleRoundType.big,
+    if (widget.shape == AgentSpeechBubbleShapeType.type1) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 62, vertical: 3),
+        child: AgentSpeechBubbleShape(
+          message: widget.message,
+          topLeft: AgentSpeechBubbleRoundType.big,
+          topRight: AgentSpeechBubbleRoundType.big,
+          bottomLeft: AgentSpeechBubbleRoundType.small,
+          bottomRight: AgentSpeechBubbleRoundType.big,
+        ),
       );
-    } else if (widget.shape == AgentSpeechBubbleShapeType.type2){
-      return AgentSpeechBubbleShape(
-        message: widget.message,
-        topLeft: AgentSpeechBubbleRoundType.small,
-        topRight: AgentSpeechBubbleRoundType.big,
-        bottomLeft: AgentSpeechBubbleRoundType.small,
-        bottomRight: AgentSpeechBubbleRoundType.big,
+    } else if (widget.shape == AgentSpeechBubbleShapeType.type2) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal:62, vertical: 3),
+        child: AgentSpeechBubbleShape(
+          message: widget.message,
+          topLeft: AgentSpeechBubbleRoundType.small,
+          topRight: AgentSpeechBubbleRoundType.big,
+          bottomLeft: AgentSpeechBubbleRoundType.small,
+          bottomRight: AgentSpeechBubbleRoundType.big,
+        ),
       );
     } else {
-      return AgentSpeechBubbleShape(
-        message: widget.message,
-        topLeft: AgentSpeechBubbleRoundType.small,
-        topRight: AgentSpeechBubbleRoundType.big,
-        bottomLeft: AgentSpeechBubbleRoundType.big,
-        bottomRight: AgentSpeechBubbleRoundType.big,
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 30),
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 62),
+              child: AgentSpeechBubbleShape(
+                message: widget.message,
+                topLeft: AgentSpeechBubbleRoundType.small,
+                topRight: AgentSpeechBubbleRoundType.big,
+                bottomLeft: AgentSpeechBubbleRoundType.big,
+                bottomRight: AgentSpeechBubbleRoundType.big,
+              ),
+            ),
+            Positioned(
+              bottom: -23, // Adjust this value to align the center correctly
+              left: 22,
+              child: SizedBox(
+                width: 40, // Adjust the width as needed
+                height: 40, // Adjust the height as needed
+                child: AgentIcon(),
+              ),
+            ),
+          ],
+        ),
       );
     }
   }
 }
-
-
 
 class AgentSpeechBubbleShape extends StatelessWidget {
   final String message;
@@ -67,11 +91,19 @@ class AgentSpeechBubbleShape extends StatelessWidget {
   final AgentSpeechBubbleRoundType bottomRight;
   final AgentSpeechBubbleRoundType bottomLeft;
 
-  const AgentSpeechBubbleShape({super.key, required this.message, required, required this.topLeft, required this.topRight, required this.bottomRight, required this.bottomLeft });
+  const AgentSpeechBubbleShape(
+      {super.key,
+      required this.message,
+      required,
+      required this.topLeft,
+      required this.topRight,
+      required this.bottomRight,
+      required this.bottomLeft});
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: EdgeInsets.symmetric(vertical: 2),
       decoration: BoxDecoration(
           color: Color(0xffEEEEEE),
           borderRadius: BorderRadius.only(
@@ -84,6 +116,33 @@ class AgentSpeechBubbleShape extends StatelessWidget {
       child: Text(
         message,
         style: TextStyle(fontSize: 14),
+      ),
+    );
+  }
+}
+
+class AgentIcon extends StatelessWidget {
+  const AgentIcon({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 3, horizontal: 3),
+      decoration: BoxDecoration(
+        color: Color(0xffFFB3BB),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.25),
+            blurRadius: 3.0,
+            spreadRadius: 0.0,
+            offset: const Offset(1, 1),
+          )
+        ],
+        borderRadius: BorderRadius.circular(50),
+      ),
+      child: Image.asset(
+        "assets/img/omo_sym.png",
+        width: 35,
       ),
     );
   }

@@ -11,26 +11,29 @@ class ActivityWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        _ActivityWidgetWrapper(
-          childWidget: Text(
-            "나의 활동량은 ",
-            style: TextStyle(
-              fontSize: 14,
+    return Padding(
+      padding: const EdgeInsets.only(top: 3, bottom: 38),
+      child: Column(
+        children: [
+          _ActivityWidgetWrapper(
+            childWidget: Text(
+              "나의 활동량은 ",
+              style: TextStyle(
+                fontSize: 14,
+              ),
             ),
+            topMarginSize: 16,
+            bottomMarginSize: 10,
+            borderColor: 0xff7D848D,
           ),
-          topMarginSize: 16,
-          bottomMarginSize: 10,
-          borderColor: 0xff7D848D,
-        ),
-        _ActivityWidgetWrapper(
-          childWidget: _ActivityNumberInputForm(),
-          topMarginSize: 0,
-          bottomMarginSize: 16,
-          borderColor: 0xff5666EE,
-        )
-      ],
+          _ActivityWidgetWrapper(
+            childWidget: _ActivityNumberInputForm(),
+            topMarginSize: 0,
+            bottomMarginSize: 16,
+            borderColor: 0xff5666EE,
+          )
+        ],
+      ),
     );
   }
 }
@@ -41,6 +44,12 @@ class _ActivityNumberInputForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final TasteAnalysisController tasteAnalysisController = Get.find();
+    final FocusNode focusNode = FocusNode();
+
+    // Request focus when the widget is built
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      focusNode.requestFocus();
+    });
 
     return Obx(() {
       var activityInput = tasteAnalysisController.activityInput.value;
@@ -48,6 +57,7 @@ class _ActivityNumberInputForm extends StatelessWidget {
       return SizedBox(
         width: 20, // 필요한 너비로 설정
         child: TextFormField(
+          focusNode: focusNode,
           keyboardType: TextInputType.number,
           style: TextStyle(fontSize: 16),
           cursorColor: Color(0xff5666EE),
@@ -76,6 +86,7 @@ class _ActivityNumberInputForm extends StatelessWidget {
     });
   }
 }
+
 
 class _ActivityWidgetWrapper extends StatelessWidget {
   final Widget childWidget;
