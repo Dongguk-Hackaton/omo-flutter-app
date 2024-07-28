@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
-import 'package:omo/taste_analysis/const/taste_state.dart';
+import 'package:omo/taste_registration/const/taste_state.dart';
 
 import '../view/user_taste_input.dart';
 

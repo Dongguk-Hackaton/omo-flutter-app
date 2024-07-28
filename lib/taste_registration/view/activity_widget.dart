@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 
-import '../controller/taste_analysis_controller.dart';
+import '../controller/taste_registration_controller.dart';
 
 class ActivityWidget extends StatelessWidget {
   const ActivityWidget({super.key});
@@ -43,7 +43,7 @@ class _ActivityNumberInputForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TasteAnalysisController tasteAnalysisController = Get.find();
+    final TasteRegistrationController tasteRegistrationController = Get.find();
     final FocusNode focusNode = FocusNode();
 
     // Request focus when the widget is built
@@ -52,7 +52,7 @@ class _ActivityNumberInputForm extends StatelessWidget {
     });
 
     return Obx(() {
-      var activityInput = tasteAnalysisController.activityInput.value;
+      var activityInput = tasteRegistrationController.activityInput.value;
 
       return SizedBox(
         width: 20, // 필요한 너비로 설정

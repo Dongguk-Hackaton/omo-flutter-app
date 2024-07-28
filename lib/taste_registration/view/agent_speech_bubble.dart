@@ -1,9 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:omo/taste_analysis/const/agent_speech_bubble_shape_type.dart';
-
-import '../controller/taste_analysis_scroller_controller.dart';
+import 'package:omo/taste_registration/const/agent_speech_bubble_shape_type.dart';
+import 'package:omo/taste_registration/controller/taste_registration_scroller_controller.dart';
 
 class AgentSpeechBubble extends StatefulWidget {
   final String message;
@@ -17,14 +16,14 @@ class AgentSpeechBubble extends StatefulWidget {
 }
 
 class _AgentMessageState extends State<AgentSpeechBubble> {
-  final TasteAnalysisScrollerController tasteAnalysisScrollerController =
+  final TasteRegistrationScrollerController tasteRegistrationScrollerController =
       Get.find();
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      tasteAnalysisScrollerController.scrollToBottom();
+      tasteRegistrationScrollerController.scrollToBottom();
     });
   }
 

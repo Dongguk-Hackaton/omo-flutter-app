@@ -4,8 +4,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:omo/exception/not_valid_exception.dart';
 
-import 'controller/taste_analysis_controller.dart';
-import 'controller/taste_analysis_scroller_controller.dart';
+import 'controller/taste_registration_controller.dart';
+import 'controller/taste_registration_scroller_controller.dart';
 
 class TasteAnalysisScreen extends StatelessWidget {
   const TasteAnalysisScreen({super.key});
@@ -27,11 +27,11 @@ class RealTasteAnalysisScreen extends StatefulWidget {
 }
 
 class _RealTasteAnalysisScreenState extends State<RealTasteAnalysisScreen> {
-  final TasteAnalysisScrollerController tasteAnalysisScrollerController =
-      Get.put(TasteAnalysisScrollerController());
+  final TasteRegistrationScrollerController tasteRegistrationScrollerController =
+      Get.put(TasteRegistrationScrollerController());
 
-  final TasteAnalysisController tasteAnalysisController =
-      Get.put(TasteAnalysisController());
+  final TasteRegistrationController tasteRegistrationController =
+      Get.put(TasteRegistrationController());
 
   @override
   Widget build(BuildContext context) {
@@ -44,10 +44,10 @@ class _RealTasteAnalysisScreenState extends State<RealTasteAnalysisScreen> {
             child: Obx(() {
               return ListView.builder(
                 padding: EdgeInsets.only(bottom: 60),
-                controller: tasteAnalysisScrollerController.scrollController,
-                itemCount: tasteAnalysisController.widgetList.length,
+                controller: tasteRegistrationScrollerController.scrollController,
+                itemCount: tasteRegistrationController.widgetList.length,
                 itemBuilder: (context, index) {
-                  return tasteAnalysisController.widgetList[index];
+                  return tasteRegistrationController.widgetList[index];
                 },
               );
             }),
@@ -58,7 +58,7 @@ class _RealTasteAnalysisScreenState extends State<RealTasteAnalysisScreen> {
         child: GestureDetector(
           onTap: () {
             try{
-              tasteAnalysisController.updateTasteState();
+              tasteRegistrationController.updateTasteState();
             }on NotValidException catch(e) {
               showToast(e.errorCode.description);
             }

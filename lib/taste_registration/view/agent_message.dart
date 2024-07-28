@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:omo/taste_analysis/const/agent_speech_bubble_shape_type.dart';
-import 'package:omo/taste_analysis/view/agent_speech_bubble.dart';
+import 'package:omo/taste_registration/const/agent_speech_bubble_shape_type.dart';
+import 'package:omo/taste_registration/view/agent_speech_bubble.dart';
 
 import '../const/taste_state.dart';
 import '../controller/agent_message_controller.dart';

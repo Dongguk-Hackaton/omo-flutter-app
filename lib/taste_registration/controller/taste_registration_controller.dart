@@ -2,14 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:omo/exception/error_code.dart';
 import 'package:omo/exception/not_valid_exception.dart';
-import 'package:omo/taste_analysis/const/date_style.dart';
-import 'package:omo/taste_analysis/const/interest.dart';
-import 'package:omo/taste_analysis/const/taste_state.dart';
+import 'package:omo/taste_registration/const/date_style.dart';
+import 'package:omo/taste_registration/const/interest.dart';
+import 'package:omo/taste_registration/const/taste_state.dart';
 
 import '../const/food.dart';
 import '../view/agent_message.dart';
 
-class TasteAnalysisController extends GetxController {
+class TasteRegistrationController extends GetxController {
   var currentTasteState = TasteState.activity;
 
   var widgetList = <Widget>[].obs;

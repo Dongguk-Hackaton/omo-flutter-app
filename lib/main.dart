@@ -4,7 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:http/http.dart' as http;
-import 'package:omo/taste_analysis/taste_analysis_screen.dart';
+import 'package:omo/taste_registration/taste_registration_screen.dart';
 import 'dart:convert';
 import 'home/homescreen.dart'; // 홈 화면 연결
 

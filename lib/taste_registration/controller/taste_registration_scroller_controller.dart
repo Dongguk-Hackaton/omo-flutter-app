@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class TasteAnalysisScrollerController extends GetxController {
+class TasteRegistrationScrollerController extends GetxController {
   final ScrollController scrollController = ScrollController();
 
   void scrollToBottom() {

@@ -2,8 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
 import '../const/taste_state.dart';
-import '../controller/taste_analysis_controller.dart';
-import '../controller/taste_analysis_scroller_controller.dart';
+import '../controller/taste_registration_controller.dart';
+import '../controller/taste_registration_scroller_controller.dart';
 
 class TasteButtonsWidget extends StatelessWidget {
   final TasteState tasteState;
@@ -12,8 +12,8 @@ class TasteButtonsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TasteAnalysisController tasteAnalysisController =
-    Get.put(TasteAnalysisController());
+    final TasteRegistrationController tasteRegistrationController =
+    Get.put(TasteRegistrationController());
 
     return Obx(
           () => Padding(
@@ -22,7 +22,7 @@ class TasteButtonsWidget extends StatelessWidget {
           alignment: WrapAlignment.end, // 오른쪽 정렬
           spacing: 10.0, // 버튼 사이의 가로 간격
           runSpacing: 10.0, // 줄 사이의 세로 간격
-          children: List.generate(tasteAnalysisController.getLengthOfButton(tasteState), (index) {
+          children: List.generate(tasteRegistrationController.getLengthOfButton(tasteState), (index) {
             return TasteButtonWidget(
                 buttonId: index, tasteState: tasteState);
           }),
@@ -44,25 +44,25 @@ class TasteButtonWidget extends StatefulWidget {
 }
 
 class _TasteButtonWidgetState extends State<TasteButtonWidget> {
-  final TasteAnalysisScrollerController tasteAnalysisScrollerController =
+  final TasteRegistrationScrollerController tasteRegistrationScrollerController =
   Get.find();
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      tasteAnalysisScrollerController.scrollToBottom();
+      tasteRegistrationScrollerController.scrollToBottom();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final TasteAnalysisController tasteAnalysisController = Get.find();
+    final TasteRegistrationController tasteRegistrationController = Get.find();
 
     return Obx(() {
-      TasteButton button = tasteAnalysisController.getTasteInput(widget.tasteState, widget.buttonId) as TasteButton;
+      TasteButton button = tasteRegistrationController.getTasteInput(widget.tasteState, widget.buttonId) as TasteButton;
       return GestureDetector(
-        onTap: () => tasteAnalysisController.onPressTasteButton(
+        onTap: () => tasteRegistrationController.onPressTasteButton(
             widget.tasteState, button.getId()),
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
