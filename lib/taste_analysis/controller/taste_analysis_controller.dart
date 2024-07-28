@@ -14,10 +14,10 @@ class TasteAnalysisController extends GetxController {
 
   var widgetList = <Widget>[].obs;
 
-  var dateStyleTasteButtons = _createDateStyleTasteButtons();
-  var interestTasteButtons = _createInterestTasteButtons();
-  var likeFoodTasteButtons = _createFoodTasteButtons();
-  var dislikeFoodTasteButtons = _createFoodTasteButtons();
+  var dateStyleTasteButtons = _createTasteButtons(DateStyle.values);
+  var interestTasteButtons = _createTasteButtons(Interest.values);
+  var likeFoodTasteButtons =  _createTasteButtons(Food.values);
+  var dislikeFoodTasteButtons =  _createTasteButtons(Food.values);
   var activityInput = TasteNumberInput(-1, false).obs;
 
   int dateStyleTrueCount = 0;
@@ -41,37 +41,13 @@ class TasteAnalysisController extends GetxController {
     widgetList.add(AgentMessage(tasteState: currentTasteState));
   }
 
-  static RxList<Rx<TasteButton>> _createInterestTasteButtons() {
+  static RxList<Rx<TasteButton>> _createTasteButtons(var tasteValues) {
     RxList<Rx<TasteButton>> buttons = RxList();
     int index = 0;
-    for (var interest in Interest.values) {
-      buttons.add(TasteButton(index++, interest.description, false).obs);
+    for (var value in tasteValues) {
+      buttons.add(TasteButton(index++, value.description, false).obs);
     }
     return buttons;
-  }
-
-  static RxList<Rx<TasteButton>> _createFoodTasteButtons() {
-    RxList<Rx<TasteButton>> buttons = RxList();
-    int index = 0;
-    for (var food in Food.values) {
-      buttons.add(TasteButton(index++, food.description, false).obs);
-    }
-    return buttons;
-  }
-
-  static RxList<Rx<TasteButton>> _createDateStyleTasteButtons() {
-    RxList<Rx<TasteButton>> buttons = RxList();
-    int index = 0;
-    for (var food in DateStyle.values) {
-      buttons.add(TasteButton(index++, food.description, false).obs);
-    }
-    return buttons;
-  }
-
-  void updateTasteButtonState(TasteState tasteState, int index) {
-    if (tasteState != currentTasteState) {
-      return;
-    }
   }
 
   TasteInput getTasteInput(TasteState tasteState, int buttonId) {
@@ -142,7 +118,6 @@ class TasteAnalysisController extends GetxController {
     validate();
     if (currentTasteState == TasteState.activity) {
       if (!(activityInput.value._value > 9 || activityInput.value._value < 0)) {
-        print("false로 바뀜");
         activityInput.update((value) {
           value?._enabled = false;
         });
