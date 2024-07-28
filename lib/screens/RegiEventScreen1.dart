@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:omo/screens/regi_event_view/PreviewMap.dart';
-import 'package:omo/screens/regi_event_view/RegiEventAppBar.dart';
-import 'package:omo/screens/regi_event_view/DescriptSelectLocation.dart';
-import 'package:omo/screens/regi_event_view/DropdownLocations.dart';
-import 'package:omo/screens/regi_event_view/DescriptPartner.dart';
-import 'package:omo/screens/regi_event_view/ListPartner.dart';
-import 'package:omo/screens/regi_event_view/PreviewMap.dart';
-import 'package:omo/screens/regi_event_view/FowardStepButton.dart';
+import 'package:omo/screens/regi_event_view/common_widget/PreviewMap.dart';
+import 'package:omo/screens/regi_event_view/common_widget/RegiEventAppBar.dart';
+import 'package:omo/screens/regi_event_view/screen1_widget/DescriptSelectLocation.dart';
+import 'package:omo/screens/regi_event_view/screen1_widget/DropdownLocations.dart';
+import 'package:omo/screens/regi_event_view/screen1_widget/DescriptPartner.dart';
+import 'package:omo/screens/regi_event_view/screen1_widget/ListPartner.dart';
+import 'package:omo/screens/regi_event_view/common_widget/PreviewMap.dart';
+import 'package:omo/screens/regi_event_view/common_widget/FowardStepButton.dart';
 
 void main() {
   runApp(
