@@ -43,7 +43,7 @@ class _AgentMessageState extends State<AgentSpeechBubble> {
       );
     } else if (widget.shape == AgentSpeechBubbleShapeType.type2) {
       return Padding(
-        padding: const EdgeInsets.symmetric(horizontal:62, vertical: 3),
+        padding: const EdgeInsets.symmetric(horizontal: 62, vertical: 3),
         child: AgentSpeechBubbleShape(
           message: widget.message,
           topLeft: AgentSpeechBubbleRoundType.small,
@@ -54,29 +54,19 @@ class _AgentMessageState extends State<AgentSpeechBubble> {
       );
     } else {
       return Padding(
-        padding: const EdgeInsets.only(bottom: 30),
-        child: Stack(
-          clipBehavior: Clip.none,
+        padding: const EdgeInsets.only(left:21),
+        child: Row(
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 62),
-              child: AgentSpeechBubbleShape(
-                message: widget.message,
-                topLeft: AgentSpeechBubbleRoundType.small,
-                topRight: AgentSpeechBubbleRoundType.big,
-                bottomLeft: AgentSpeechBubbleRoundType.big,
-                bottomRight: AgentSpeechBubbleRoundType.big,
-              ),
+            AgentIcon(),
+            SizedBox(width: 10,),
+            AgentSpeechBubbleShape(
+              message: widget.message,
+              topLeft: AgentSpeechBubbleRoundType.small,
+              topRight: AgentSpeechBubbleRoundType.big,
+              bottomLeft: AgentSpeechBubbleRoundType.big,
+              bottomRight: AgentSpeechBubbleRoundType.big,
             ),
-            Positioned(
-              bottom: -23, // Adjust this value to align the center correctly
-              left: 22,
-              child: SizedBox(
-                width: 40, // Adjust the width as needed
-                height: 40, // Adjust the height as needed
-                child: AgentIcon(),
-              ),
-            ),
+
           ],
         ),
       );
@@ -142,7 +132,7 @@ class AgentIcon extends StatelessWidget {
       ),
       child: Image.asset(
         "assets/img/omo_sym.png",
-        width: 35,
+        width: 25,
       ),
     );
   }

@@ -12,7 +12,7 @@ class ActivityWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 3, bottom: 38),
+      padding: const EdgeInsets.symmetric(vertical: 14),
       child: Column(
         children: [
           _ActivityWidgetWrapper(
@@ -22,14 +22,14 @@ class ActivityWidget extends StatelessWidget {
                 fontSize: 14,
               ),
             ),
-            topMarginSize: 16,
+            topMarginSize: 0,
             bottomMarginSize: 10,
             borderColor: 0xff7D848D,
           ),
           _ActivityWidgetWrapper(
             childWidget: _ActivityNumberInputForm(),
             topMarginSize: 0,
-            bottomMarginSize: 16,
+            bottomMarginSize: 0,
             borderColor: 0xff5666EE,
           )
         ],
