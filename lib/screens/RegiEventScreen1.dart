@@ -8,6 +8,7 @@ import 'package:omo/screens/regi_event_view/screen1_widget/DescriptPartner.dart'
 import 'package:omo/screens/regi_event_view/screen1_widget/ListPartner.dart';
 import 'package:omo/screens/regi_event_view/common_widget/PreviewMap.dart';
 import 'package:omo/screens/regi_event_view/common_widget/FowardStepButton.dart';
+import 'package:omo/screens/regi_event_view/screen1_widget/Calendar.dart';
 
 void main() {
   runApp(
@@ -36,27 +37,29 @@ class RegiSchedule extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(title: '여행 일정 등록'),
-      body: Container(
-        
-        // decoration: BoxDecoration(
-        //   border: Border.all(color: Colors.black),
-        // ),
+      body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               LocationSelection(),
-              SizedBox(height: 1),
+              SizedBox(height: 10),
               DropdownList(),
               SizedBox(height: 10),
               TravelPartner(),
-              SizedBox(height: 1),
+              SizedBox(height: 10),
               FriendList(),
-              SizedBox(height: 1),
-              // Previewmap(),
-              Spacer(),
-              DateSelectionButton(),
+              SizedBox(height: 10),
+              DateRangeSelector(
+                onRangeSelected: (selectedRange) {
+                  // 선택된 날짜 범위 처리 코드
+                  print('Selected range: ${selectedRange.start} - ${selectedRange.end}');
+                },
+              ),
+              SizedBox(height: 10),
+              // PreviewMap(),
+              DateSelectionButton(buttonText: '데이트 시간 정하기'),
             ],
           ),
         ),
