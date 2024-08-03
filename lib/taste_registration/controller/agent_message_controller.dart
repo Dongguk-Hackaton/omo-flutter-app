@@ -21,16 +21,21 @@ class AgentMessageController extends GetxController {
 
   AgentMessageController(this.currentTasteState) {
     var activityMessage = [
-      "반가워요 광래님!\n저는 광래님의 추천 에이전트 오모라고 해요.", // API로 사용자 이름 받아오기
-      "먼저 몇 가지 질문에 답해주시면 취향 정보를\n등록해드릴게요!",
+      "반가워요 광래님!\n저는 광래님의 추천 에이전트 오모라고 해요.",
+      "먼저 몇 가지 질문에 답해주시면 취향 정보를 등록해드릴게요!",
       "광래님의 활동량은 어떻게 되시나요?",
-      "숫자를 입력해주시면 추천해드릴 코스의\n활동 반경을 위한 기준으로 사용할게요.\n0에 가까울수록 가까운 반경을,\n멀수록 먼 거리까지 추천해드릴게요.",
-      "0 ~ 9사이의 값을 입력해주세요!",
+      "0 ~ 9사이의 값을 입력해주세요!"
     ];
-    var dateStyleMessages = ["입력해주셔서 감사해요!","다음으로는 선호하는 데이트 스타일들 목록이예요", "광래님이 선호하는 것을 5개 이하로 선택해주세요"];
-    var interestMessages = ["취향이 저랑 비슷하시군요!","그렇다면, 요즘 관심사가 어떻게 되시나요?","관심있는 것들을 5개 이하로 선택해주세요"];
-    var likeFoodMessages = ["알려주셔서 감사해요. 거의 다 됐어요!","광래님은 어떤 음식을 좋아하시나요?", "선호하는 음식을 4개 이하로 선택해주세요"];
-    var dislikeFoodMessages = ["입력해주셔서 감사해요.","이제 모든 정보를 다 받았어요!","마지막으로 싫어하는 음식을 알려주시면\n입력한 정보를 바탕으로 광래님에게\n딱 맞는 추천을 해드릴게요!"];
+    var dateStyleMessages = ["선호하는 데이트 스타일들 목록이예요", "광래님이 선호하는 거 3개만 선택해주세요"];
+    var interestMessages = [
+      "취향이 저랑 비슷하시군요!",
+      "요즘 관심사가 어떻게 되시나요?",
+      "광래님이 선호하는 것 3개만 선택해주세요"
+    ];
+    var likeFoodMessages = ["음식은 어떤 것을 좋아하시나요?", "광래님이 선호하는 것 3개만 선택해주세요"];
+    var dislikeFoodMessages = [
+      "그렇다면 싫어하는 음식도 3개만 알려주세요!",
+    ];
 
     switch (currentTasteState) {
       case TasteState.activity:

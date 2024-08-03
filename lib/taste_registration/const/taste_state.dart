@@ -1,3 +1,3 @@
 enum TasteState {
-  activity, dateStyle, interest, likeFood, dislikeFood
+   activity, dateStyle, interest, likeFood, dislikeFood
 }

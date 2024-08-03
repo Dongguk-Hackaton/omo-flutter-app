@@ -1,26 +1,22 @@
 enum Food {
-  JOKBAL_BOSSAM("족발/보쌈"),
-  JJIM_TANG_JIGAE("찜/탕/찌개"),
-  TONKATSU("돈까스"),
-  SASHIMI("회"),
-  JAPANESE("일식"),
-  PIZZA("피자"),
-  MEAT_GRILL("고기/구이"),
-  WESTERN("양식"),
-  CHICKEN("치킨"),
-  CHINESE("중식"),
-  ASIAN("아시안"),
-  KOREAN_RICE_NOODLE("한식/백반/죽/국수"),
-  LUNCH_BOX("도시락"),
-  SNACK("분식"),
-  CAFE_DESSERT("카페/디저트"),
-  FAST_FOOD("패스트푸드");
+  jokbalBossam("족발/보쌈"),
+  jjimTangJigae("찜/탕/찌개"),
+  tonkatsu("돈까스"),
+  sashimi("회"),
+  japanese("일식"),
+  pizza("피자"),
+  meatGrill("고기/구이"),
+  western("양식"),
+  chicken("치킨"),
+  chinese("중식"),
+  asian("아시안"),
+  koreanRiceNoodle("한식/백반/죽/국수"),
+  lunchBox("도시락"),
+  snack("분식"),
+  cafeDessert("카페/디저트"),
+  fastFood("패스트푸드");
 
   final String description;
 
   const Food(this.description);
-
-  String toApiString() {
-    return this.toString().split('.').last;
-  }
 }
