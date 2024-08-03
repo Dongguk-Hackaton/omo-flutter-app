@@ -1,5 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:omo/screens/RegiEventScreen1.dart'; // 경로는 실제 위치에 맞게 조정
 
 class HomeAddButton extends StatelessWidget {
   const HomeAddButton({super.key});
@@ -7,7 +8,9 @@ class HomeAddButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        Get.to(RegiSchedule()); // GetX의 Get.to() 메서드를 사용하여 화면 이동
+      },
       child: Container(
         margin: EdgeInsets.symmetric(vertical: 44),
         padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),

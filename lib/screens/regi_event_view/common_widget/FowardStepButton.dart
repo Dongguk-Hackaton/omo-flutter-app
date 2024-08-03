@@ -2,7 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:omo/colors.dart';
 
 class DateSelectionButton extends StatelessWidget {
-  const DateSelectionButton({Key? key}) : super(key: key);
+  final String buttonText; // 버튼 텍스트를 받을 변수
+
+  const DateSelectionButton({
+    Key? key,
+    required this.buttonText, // 버튼 텍스트를 필수로 받도록 설정
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +21,9 @@ class DateSelectionButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(50), // 모서리 반경 설정
           ),
           child: ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              // 버튼 클릭 시 동작을 여기에 추가
+            },
             style: ElevatedButton.styleFrom(
               backgroundColor: omoBlue, // primary 대신 backgroundColor 사용
               shape: RoundedRectangleBorder(
@@ -24,13 +31,13 @@ class DateSelectionButton extends StatelessWidget {
               ),
             ),
             child: Text(
-              '날짜 선택하기',
+              buttonText, // 전달받은 버튼 텍스트 사용
               style: TextStyle(
                 color: Colors.white,
                 fontFamily: 'Apple SD Gothic Neo',
                 fontSize: 17,
-                fontWeight: FontWeight.w500
-                ),
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ),
         ),
