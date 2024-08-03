@@ -12,3 +12,6 @@ const omoSunsetPink=Color(0xFFEFB8C8);
 // BLACK
 const omoGrey = Color(0xFFE6E6E6);
 const omoTextBlack = Color(0xFF4F4F4F);
+
+// WHITE
+const omoWhite = Color(0xFFFFFFFF);
