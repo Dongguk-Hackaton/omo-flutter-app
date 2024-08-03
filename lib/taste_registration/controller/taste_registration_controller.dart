@@ -1,10 +1,16 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:omo/exception/error_code.dart';
 import 'package:omo/exception/not_valid_exception.dart';
+import 'package:omo/screens/HomeScreen.dart';
 import 'package:omo/taste_registration/const/date_style.dart';
 import 'package:omo/taste_registration/const/interest.dart';
 import 'package:omo/taste_registration/const/taste_state.dart';
+import 'package:omo/assignUserFavor.dart';
+
+import 'package:omo/taste_registration/const/date_style.dart';
 
 import '../const/food.dart';
 import '../view/agent_message.dart';
@@ -111,36 +117,87 @@ class TasteRegistrationController extends GetxController {
       return "";
     }).join("");
 
-    return dateStyle + interest + likeFood + dislikeFood;
+    var user_favor_data = Get.arguments;
+    user_favor_data = dateStyle + interest + likeFood + dislikeFood;
+
+    return user_favor_data;
   }
 
-  void updateTasteState() {
-    validate();
-    if (currentTasteState == TasteState.activity) {
-      if (!(activityInput.value._value > 9 || activityInput.value._value < 0)) {
-        activityInput.update((value) {
-          value?._enabled = false;
-        });
-      }
+
+Future<void> updateTasteState() async {
+  validate();
+  if (currentTasteState == TasteState.activity) {
+    if (!(activityInput.value.getValue() > 9 || activityInput.value.getValue() < 0)) {
+      activityInput.update((value) {
+        value?._enabled = false;
+      });
     }
+  }
+  if (tasteStateIndex == 4) {
+    // 취향 정보를 서버에 전송
+    final connectAPI = Get.find<ConnectAPI>();
+
+    List<String> convertDateStyleToApiStrings() {
+      return dateStyleTasteButtons
+          .where((element) => element.value.getState())
+          .map((element) => DateStyle.values[element.value.getId()].toApiString())
+          .toList();
+    }
+
+    List<String> convertInterestToApiStrings() {
+      return interestTasteButtons
+          .where((element) => element.value.getState())
+          .map((element) => Interest.values[element.value.getId()].toApiString())
+          .toList();
+    }
+
+    List<String> convertFoodToApiStrings(List<Rx<TasteButton>> tasteButtons) {
+      return tasteButtons
+          .where((element) => element.value.getState())
+          .map((element) => Food.values[element.value.getId()].toApiString())
+          .toList();
+    }
+
+    int activityValue = activityInput.value.getValue();
+
+    // 각 리스트를 JSON 문자열로 변환합니다.
+    String dateStylesJson = jsonEncode(convertDateStyleToApiStrings());
+    String interestsJson = jsonEncode(convertInterestToApiStrings());
+    String likeFoodsJson = jsonEncode(convertFoodToApiStrings(likeFoodTasteButtons));
+    String dislikeFoodsJson = jsonEncode(convertFoodToApiStrings(dislikeFoodTasteButtons));
+
+    await connectAPI.tasteFind(
+      activityValue,
+      dateStylesJson,
+      interestsJson,
+      likeFoodsJson,
+      dislikeFoodsJson,
+    );
+    Get.offAll(HomeScreen());
+  } else {
     tasteStateIndex++;
     currentTasteState = tasteStateList[tasteStateIndex];
     widgetList.add(AgentMessage(tasteState: currentTasteState));
   }
+}
 
   void upStateTrueCount(TasteState tasteState) {
     switch (tasteState) {
       case TasteState.dateStyle:
         dateStyleTrueCount++;
+        print(dateStyleTrueCount);
         break;
       case TasteState.interest:
         interestTrueCount++;
+        print(interestTrueCount);
         break;
       case TasteState.likeFood:
         likeFoodTrueCount++;
+        print(likeFoodTrueCount);
         break;
       case TasteState.dislikeFood:
         dislikeFoodTrueCount++;
+        print(dislikeFoodTrueCount);
         break;
       case TasteState.activity:
         break;
@@ -151,15 +208,19 @@ class TasteRegistrationController extends GetxController {
     switch (tasteState) {
       case TasteState.dateStyle:
         dateStyleTrueCount--;
+        print(dateStyleTrueCount);
         break;
       case TasteState.interest:
         interestTrueCount--;
+        print(interestTrueCount);
         break;
       case TasteState.likeFood:
         likeFoodTrueCount--;
+        print(likeFoodTrueCount);
         break;
       case TasteState.dislikeFood:
         dislikeFoodTrueCount--;
+        print(dislikeFoodTrueCount);
         break;
       case TasteState.activity:
         break;
@@ -168,24 +229,24 @@ class TasteRegistrationController extends GetxController {
 
   void validate() {
     if (currentTasteState == TasteState.dateStyle) {
-      if (dateStyleTrueCount != 3) {
+      if (dateStyleTrueCount > 5) {
         throw NotValidException(ErrorCode.invalidDateStyleSelection);
       }
     }
     if (currentTasteState == TasteState.interest) {
-      if (interestTrueCount != 3) {
+      if (interestTrueCount > 5) {
         throw NotValidException(ErrorCode.invalidInterestSelection);
       }
     }
 
     if (currentTasteState == TasteState.likeFood) {
-      if (likeFoodTrueCount != 3) {
+      if (likeFoodTrueCount > 4) {
         throw NotValidException(ErrorCode.invalidLikeFoodSelection);
       }
     }
 
     if (currentTasteState == TasteState.dislikeFood) {
-      if (dislikeFoodTrueCount != 3) {
+      if (dislikeFoodTrueCount > 4) {
         throw NotValidException(ErrorCode.invalidDislikeFoodSelection);
       }
     }

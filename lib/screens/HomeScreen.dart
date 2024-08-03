@@ -1,49 +1,125 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:omo/colors.dart';
+import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+import 'package:omo/main.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'dart:convert';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:omo/screens/NavigationBar.dart';
 import 'package:omo/screens/homescreen_view/HomeAddButton.dart';
 import 'package:omo/screens/homescreen_view/HomeAppBar.dart';
 import 'package:omo/screens/homescreen_view/HomeBanner.dart';
 import 'package:omo/screens/homescreen_view/HomeTravelSchedule.dart';
 import 'package:omo/screens/homescreen_view/SliderPlaceList.dart';
-import 'package:omo/screens/NavigationBar.dart';
-import '../main.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:omo/taste_registration/taste_registration_screen.dart';
 
 final storage = FlutterSecureStorage();
+
+class HomeController extends GetxController {
+  var isLoading = true.obs;
+  var hasTasteProfile = false.obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    _checkTasteProfile();
+  }
+
+  Future<void> _checkTasteProfile() async {
+    final serviceAccessToken = await storage.read(key: 'serviceAccessToken');
+    final serviceRefreshToken = await storage.read(key: 'serviceRefreshToken');
+    print(serviceAccessToken); // 토큰 값 확인
+    print(serviceRefreshToken); 
+
+    if (serviceAccessToken == null) {
+      // 예외 처리
+      isLoading.value = false;
+      Get.offAll(() => RootScreen());
+      return;
+    }
+
+    http.Response response;
+    try {
+      response = await http.get(
+        Uri.parse('http://kkr010128.iptime.org:12358/api/tastes'),
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer $serviceAccessToken',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        print('취향 정보가 존재합니다.');
+        Fluttertoast.showToast(
+          msg: '로그인에 성공했습니다.',
+          toastLength: Toast.LENGTH_SHORT, // 토스트 뜨는 시간 얼마나 길게 할 지 (Android)
+          gravity: ToastGravity.BOTTOM, // 토스트 위치 어디에 할 것인지
+          timeInSecForIosWeb: 2, // 토스트 뜨는 시간 얼마나 길게 할 지 (iOS & Web)
+          backgroundColor: const Color.fromARGB(174, 0, 0, 0),
+        );
+        hasTasteProfile.value = true;
+        Get.offAll(() => HomeScreen());
+      } else {
+        print('취향 정보가 존재하지 않습니다.');
+        Fluttertoast.showToast(
+          msg: '가입 절차가 마무리 되지 않았습니다.',
+          toastLength: Toast.LENGTH_SHORT, // 토스트 뜨는 시간 얼마나 길게 할 지 (Android)
+          gravity: ToastGravity.BOTTOM, // 토스트 위치 어디에 할 것인지
+          timeInSecForIosWeb: 2, // 토스트 뜨는 시간 얼마나 길게 할 지 (iOS & Web)
+          backgroundColor: const Color.fromARGB(174, 0, 0, 0),
+        );
+        Get.offAll(() => TasteAnalysisScreen());
+        return;
+      }
+    } catch (e) {
+      // 서버 연결 실패 처리
+      Get.offAll(() => TasteAnalysisScreen());
+      return;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+}
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: omoWhite,
-      body: CustomScrollView(
-        slivers: [
-          HomeAppBar(), // HomeAppBar 위젯 사용
-          SliverList(
-            delegate: SliverChildListDelegate(
-              [
-                HomeTravelSchedule(isReady: true),
-                HomeBanner(),
-                SliderPlaceList(
-                  title: "경주의 인기장소 🔥",
-                  subTitle: "곧 방문할 경주의 인기 장소를 방문해보세요",
+    return GetBuilder<HomeController>(
+      init: HomeController(),
+      builder: (controller) {
+        return Scaffold(
+          backgroundColor: omoWhite,
+          body: controller.isLoading.value
+              ? Center(child: CircularProgressIndicator())
+              : CustomScrollView(
+                  slivers: [
+                    HomeAppBar(), // HomeAppBar 위젯 사용
+                    SliverList(
+                      delegate: SliverChildListDelegate(
+                        [
+                          HomeTravelSchedule(isReady: controller.hasTasteProfile.value),
+                          HomeBanner(),
+                          SliderPlaceList(
+                            title: "경주의 인기장소 🔥",
+                            subTitle: "곧 방문할 경주의 인기 장소를 방문해보세요",
+                          ),
+                          SliderPlaceList(
+                            title: "나의 맞춤형 여행지 🍀",
+                            subTitle: "광래님의 맞춤형 여행지를 골라봤어요",
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-                SliderPlaceList(
-                  title: "나의 맞춤형 여행지 🍀",
-                  subTitle: "광래님의 맞춤형 여행지를 골라봤어요",
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-      bottomNavigationBar: CustomNavigationBar(),
-      floatingActionButton: HomeAddButton(),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+          bottomNavigationBar: CustomNavigationBar(),
+          floatingActionButton: HomeAddButton(),
+          floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        );
+      },
     );
   }
 
@@ -57,11 +133,7 @@ class HomeScreen extends StatelessWidget {
 
     if (!context.mounted) return; // mounted 체크 추가
 
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => RootScreen()),
-      (route) => false,
-    );
+    Get.offAll(() => RootScreen());
   }
 }
 
@@ -117,9 +189,5 @@ Future<Map<String, String>> getinfoApi(BuildContext context) async {
 }
 
 void navigateToLogin(BuildContext context) {
-  Navigator.pushAndRemoveUntil(
-    context,
-    MaterialPageRoute(builder: (context) => RootScreen()),
-    (route) => false,
-  );
+  Get.offAll(() => RootScreen());
 }

@@ -7,6 +7,8 @@ import 'package:http/http.dart' as http;
 import 'package:omo/taste_registration/taste_registration_screen.dart';
 import 'dart:convert';
 import 'screens/HomeScreen.dart'; // 홈 화면 연결
+import 'package:get/get.dart';
+import 'package:omo/assignUserFavor.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,17 +17,24 @@ void main() async {
     javaScriptAppKey: "a709c6184e105821403aca9715766056",
   );
 
-  // 토큰 확인 및 초기 화면 결정
   final storage = FlutterSecureStorage();
   String? accessToken = await storage.read(key: 'serviceAccessToken');
+  storage.delete(key: 'serviceAccessToken');
+  storage.delete(key: 'serviceRefreshToken');
+
+  // GetConnect 인스턴스 등록
+  Get.lazyPut<GetConnect>(() => GetConnect());
+  // ConnectAPI 인스턴스 등록
+  Get.lazyPut<ConnectAPI>(() => ConnectAPI());
 
   Widget initialScreen;
-  // if (accessToken != null) {
-  //   initialScreen = TasteAnalysis();
-  // } else {
-  //   initialScreen = RootScreen();
-  // }
-  initialScreen = TasteAnalysisScreen();
+  if (accessToken != null) {
+    final apiClient = Get.find<ConnectAPI>();
+    // await apiClient.tasteFind();
+    initialScreen = HomeScreen(); // 홈 화면으로 변경
+  } else {
+    initialScreen = RootScreen();
+  }
 
   runApp(MyApp(initialScreen: initialScreen));
 }
@@ -38,7 +47,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
+      initialRoute: '/',
+      routes: {
+        // '/': (context) => RootScreen(), // 초기 화면
+        '/taste': (context) => TasteAnalysisScreen(), // 초기 화면
+        '/home': (context) => HomeScreen(), // 홈 화면
+      },
       home: initialScreen,
     );
   }
@@ -176,7 +191,7 @@ class RootScreen extends StatelessWidget {
     );
   }
 
-  Widget buildTitleText() {
+    Widget buildTitleText() {
     return Container(
       width: double.infinity,
       height: 78,
@@ -232,12 +247,14 @@ class RootScreen extends StatelessWidget {
       String serviceRefreshToken = responseData['refreshToken'];
       await storage.write(key: 'serviceAccessToken', value: serviceAccessToken);
       await storage.write(key: 'serviceRefreshToken', value: serviceRefreshToken);
+      print(serviceAccessToken);
+      print(serviceRefreshToken);
       return {'serviceAccessToken': serviceAccessToken, 'serviceRefreshToken': serviceRefreshToken};
     } else {
       showToast('오류가 발생하였습니다 다시 시도해주세요');
       throw Exception('Failed to send token to API');
-      }
     }
+  }
 
   Future<void> login(BuildContext context) async {
     try {
@@ -276,11 +293,10 @@ class RootScreen extends StatelessWidget {
   }
 
   void navigateHome(BuildContext context) {
-    Navigator.pushReplacement(
+    Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(
-        builder: (context) => HomeScreen(),
-      ),
+      MaterialPageRoute(builder: (context) => HomeScreen()),
+      (Route<dynamic> route) => false,
     );
   }
 
