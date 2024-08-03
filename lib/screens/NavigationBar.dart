@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:omo/colors.dart';
-import 'package:get/get.dart';
-import 'package:omo/screens/MyPage.dart';
 
 // 새로운 CustomNavigationBar 위젯 정의
 class CustomNavigationBar extends StatelessWidget implements PreferredSizeWidget {
@@ -44,7 +42,6 @@ class CustomNavigationBar extends StatelessWidget implements PreferredSizeWidget
                 icon: Icon(Icons.settings, color: Colors.white),
                 onPressed: () {
                   // 설정 버튼 클릭 시 처리
-                  Get.to(ProfilePage()); // GetX의 Get.to() 메서드를 사용하여 화면 이동
                 },
               ),
             ],

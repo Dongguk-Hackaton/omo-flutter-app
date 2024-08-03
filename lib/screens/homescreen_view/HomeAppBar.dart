@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:omo/colors.dart';
-import 'package:omo/logout.dart';
 
 class HomeAppBar extends StatelessWidget {
   HomeAppBar({Key? key}) : super(key: key);
@@ -32,9 +31,7 @@ class HomeAppBar extends StatelessWidget {
       actions: [
         IconButton(
           icon: Icon(Icons.search_rounded),
-          onPressed: () async {
-            await logout(context);
-          },
+          onPressed: () {},
         ),
       ],
     );
